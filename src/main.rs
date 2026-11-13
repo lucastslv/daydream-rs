@@ -1,6 +1,8 @@
 pub mod config;
 pub mod content;
 pub mod markdown;
+pub mod render;
+pub mod site;
 
 use anyhow::Result;
 use clap::{Parser, Subcommand};
@@ -33,13 +35,16 @@ fn main() -> Result<()> {
 
     match cli.command.unwrap_or(Command::Build { drafts: false }) {
         Command::Build { drafts } => {
-            let posts = content::load_all_posts(&cfg.content_dir)?;
-            let count = posts.iter().filter(|p| drafts || !p.meta.draft).count();
+            let raw_posts = content::load_all_posts(&cfg.content_dir)?;
+            let index = site::build_site_index(raw_posts, drafts);
+            let renderer = render::Renderer::new(&cfg.templates_dir)?;
+            renderer.write_site(&cfg, &index)?;
+
             println!(
-                "Loaded {} post(s) from '{}' (site: {})",
-                count,
-                cfg.content_dir.display(),
-                cfg.site_title
+                "Built {} EN post(s) and {} PT-BR post(s) into '{}'",
+                index.en_posts.len(),
+                index.pt_posts.len(),
+                cfg.output_dir.display()
             );
         }
     }

@@ -1,0 +1,25 @@
+{% extends "base.html" %}
+{% block content %}
+        <div id="content" class="post-view">
+          <article class="post-article">
+            <header class="post-header">
+              <h2>{{ post.meta.title }}</h2>
+              <p class="post-meta">
+                <time datetime="{{ post.iso_date }}">{{ post.formatted_date }}</time>
+                &middot; {{ post.reading_time_min }} min {% if is_pt %}de leitura{% else %}read{% endif %}
+                {% if post.meta.tags %}
+                &middot; {{ post.meta.tags | join(", ") }}
+                {% endif %}
+              </p>
+            </header>
+
+            <div class="post-body">
+              {{ post.html_body | safe }}
+            </div>
+
+            <p class="post-back">
+              <a href="{{ lang_prefix | safe }}blog.html">&larr; {% if is_pt %}Voltar para o Blog{% else %}Back to Blog{% endif %}</a>
+            </p>
+          </article>
+        </div>
+{% endblock %}

@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+{% block content %}
+        <div id="content" class="project-list">
+          <h2>{% if is_pt %}Artigos e Notas{% else %}Posts &amp; Notes{% endif %}</h2>
+
+          {% if posts %}
+            {% for post in posts %}
+          <article class="project post-card">
+            <h3><a href="{{ post.index_href | safe }}">{{ post.meta.title }}</a></h3>
+            <p class="post-meta">
+              <time datetime="{{ post.iso_date }}">{{ post.formatted_date }}</time>
+              &middot; {{ post.reading_time_min }} min {% if is_pt %}de leitura{% else %}read{% endif %}
+              {% if post.meta.tags %}
+              &middot; {{ post.meta.tags | join(", ") }}
+              {% endif %}
+            </p>
+            <p>{{ post.meta.summary }}</p>
+          </article>
+            {% endfor %}
+          {% else %}
+          <p>{% if is_pt %}Nenhum artigo publicado ainda.{% else %}No posts published yet.{% endif %}</p>
+          {% endif %}
+        </div>
+{% endblock %}

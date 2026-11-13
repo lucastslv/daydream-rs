@@ -39,6 +39,8 @@ draft = false
 +++
 
 Write your content here...
+
+![Figure 1: Visible caption below the image.](img/blog/chart.png "Accessible alt description for screen readers")
 ```
 
 Posts sharing the same `slug` across `content/en/` and `content/pt-br/` are automatically linked together via the language switcher.

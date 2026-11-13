@@ -28,6 +28,13 @@ impl Lang {
             Lang::PtBr => "pt-br",
         }
     }
+
+    pub fn post_root_prefix(&self) -> &'static str {
+        match self {
+            Lang::En => "../",
+            Lang::PtBr => "../../",
+        }
+    }
 }
 
 #[derive(Debug, Clone, Deserialize, Serialize)]
@@ -80,7 +87,7 @@ pub fn parse_post_str(input: &str, lang: Lang, source_path: PathBuf) -> Result<R
         )
     })?;
 
-    let rendered = render_markdown(markdown_body);
+    let rendered = render_markdown(markdown_body, lang.post_root_prefix());
 
     Ok(RawPost {
         meta,

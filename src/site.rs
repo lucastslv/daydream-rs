@@ -108,7 +108,7 @@ pub fn build_site_index(raw_posts: Vec<RawPost>, include_drafts: bool) -> SiteIn
         match raw.lang {
             Lang::En => {
                 // Output file: blog/<slug>.html (depth 1 from root)
-                let root_prefix = "../".to_string();
+                let root_prefix = raw.lang.post_root_prefix().to_string();
                 let lang_prefix = "../".to_string();
                 let rel_path = format!("blog/{}.html", slug);
                 let index_href = format!("blog/{}.html", slug);
@@ -140,7 +140,7 @@ pub fn build_site_index(raw_posts: Vec<RawPost>, include_drafts: bool) -> SiteIn
             }
             Lang::PtBr => {
                 // Output file: pt-br/blog/<slug>.html (depth 2 from root, depth 1 from pt-br/)
-                let root_prefix = "../../".to_string();
+                let root_prefix = raw.lang.post_root_prefix().to_string();
                 let lang_prefix = "../".to_string();
                 let rel_path = format!("pt-br/blog/{}.html", slug);
                 let index_href = format!("blog/{}.html", slug);

@@ -14,7 +14,10 @@ use clap::{Parser, Subcommand, ValueEnum};
 use crate::content::Lang;
 
 #[derive(Debug, Parser)]
-#[command(name = "daydream", about = "Minimalist bilingual SSG for simple-website")]
+#[command(
+    name = "daydream",
+    about = "Minimalist bilingual SSG for simple-website"
+)]
 struct Cli {
     /// Path to daydream.toml configuration file
     #[arg(short, long, default_value = "daydream.toml")]
@@ -138,8 +141,7 @@ fn main() -> Result<()> {
             };
 
             for &l in langs {
-                let created =
-                    create_post_skeleton(&cfg.content_dir, l, &slug, &title, &date_str)?;
+                let created = create_post_skeleton(&cfg.content_dir, l, &slug, &title, &date_str)?;
                 println!("Created {}", created.display());
             }
         }

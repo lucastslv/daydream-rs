@@ -32,11 +32,11 @@ impl Renderer {
         let tmpl = self.env.get_template("blog_index.html")?;
         let is_pt = lang == Lang::PtBr;
 
-        let (root_prefix, lang_prefix, language_switch_href, hreflang_en, hreflang_pt) =
-            match lang {
-                Lang::En => ("", "", "pt-br/blog.html", "blog.html", "pt-br/blog.html"),
-                Lang::PtBr => ("../", "", "../blog.html", "../blog.html", "blog.html"),
-            };
+        let (root_prefix, lang_prefix, language_switch_href, hreflang_en, hreflang_pt) = match lang
+        {
+            Lang::En => ("", "", "pt-br/blog.html", "blog.html", "pt-br/blog.html"),
+            Lang::PtBr => ("../", "", "../blog.html", "../blog.html", "blog.html"),
+        };
 
         let page_title = format!("Blog - {}", cfg.site_title);
 
@@ -175,7 +175,11 @@ mod tests {
             .render_blog_index(&cfg, Lang::En, &index.en_posts)
             .unwrap();
         assert!(en_index_html.contains("Hello Rust"));
-        assert!(en_index_html.contains(r#"href="blog/hello-rust.html""#), "actual html:\n{}", en_index_html);
+        assert!(
+            en_index_html.contains(r#"href="blog/hello-rust.html""#),
+            "actual html:\n{}",
+            en_index_html
+        );
         assert!(en_index_html.contains(r#"href="pt-br/blog.html""#));
 
         let pt_post_html = renderer.render_post(&cfg, &index.pt_posts[0]).unwrap();

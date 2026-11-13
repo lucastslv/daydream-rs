@@ -73,8 +73,12 @@ pub fn parse_post_str(input: &str, lang: Lang, source_path: PathBuf) -> Result<R
     let (fm_str, markdown_body) = split_frontmatter(input)
         .with_context(|| format!("invalid frontmatter in '{}'", source_path.display()))?;
 
-    let meta: Frontmatter = toml::from_str(fm_str)
-        .with_context(|| format!("failed to parse TOML frontmatter in '{}'", source_path.display()))?;
+    let meta: Frontmatter = toml::from_str(fm_str).with_context(|| {
+        format!(
+            "failed to parse TOML frontmatter in '{}'",
+            source_path.display()
+        )
+    })?;
 
     let rendered = render_markdown(markdown_body);
 
@@ -103,8 +107,9 @@ pub fn load_all_posts(content_dir: impl AsRef<Path>) -> Result<Vec<RawPost>> {
         if !lang_dir.exists() {
             continue;
         }
-        let entries = fs::read_dir(&lang_dir)
-            .with_context(|| format!("failed to read content directory '{}'", lang_dir.display()))?;
+        let entries = fs::read_dir(&lang_dir).with_context(|| {
+            format!("failed to read content directory '{}'", lang_dir.display())
+        })?;
 
         for entry in entries {
             let entry = entry?;
@@ -145,6 +150,9 @@ Hello **world**!
         );
         assert_eq!(post.meta.tags, vec!["rust", "ssg"]);
         assert!(!post.meta.draft);
-        assert!(post.html_body.contains("<p>Hello <strong>world</strong>!</p>"));
+        assert!(
+            post.html_body
+                .contains("<p>Hello <strong>world</strong>!</p>")
+        );
     }
 }

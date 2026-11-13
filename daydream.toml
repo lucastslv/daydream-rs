@@ -1,6 +1,0 @@
-site_title = "Lucas Telles da Silva"
-author = "Lucas Telles da Silva"
-base_url = "https://lucastslv.github.io"
-content_dir = "content"
-templates_dir = "templates"
-output_dir = "../simple-website"

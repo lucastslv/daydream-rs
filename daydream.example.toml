@@ -1,0 +1,10 @@
+# Example configuration for daydream-rs
+site_title = "Your Name"
+author = "Your Name"
+base_url = "https://example.com"
+subtitle_en = "Personal Website & Blog"
+subtitle_pt = "Site Pessoal & Blog"
+footer_text = "Quod erat demonstrandum."
+content_dir = "content"
+templates_dir = "templates"
+output_dir = "."

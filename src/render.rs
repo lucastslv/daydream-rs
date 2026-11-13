@@ -12,17 +12,31 @@ pub struct Renderer {
     env: Environment<'static>,
 }
 
+const DEFAULT_BASE_HTML: &str = include_str!("../templates/base.html");
+const DEFAULT_BLOG_INDEX_HTML: &str = include_str!("../templates/blog_index.html");
+const DEFAULT_POST_HTML: &str = include_str!("../templates/post.html");
+
 impl Renderer {
     pub fn new(templates_dir: impl AsRef<Path>) -> Result<Self> {
         let templates_dir = templates_dir.as_ref();
         let mut env = Environment::new();
 
-        for name in ["base.html", "blog_index.html", "post.html"] {
+        let defaults = [
+            ("base.html", DEFAULT_BASE_HTML),
+            ("blog_index.html", DEFAULT_BLOG_INDEX_HTML),
+            ("post.html", DEFAULT_POST_HTML),
+        ];
+
+        for (name, builtin) in defaults {
             let path = templates_dir.join(name);
-            let source = fs::read_to_string(&path)
-                .with_context(|| format!("failed to read template '{}'", path.display()))?;
+            let source = if path.exists() {
+                fs::read_to_string(&path)
+                    .with_context(|| format!("failed to read template '{}'", path.display()))?
+            } else {
+                builtin.to_string()
+            };
             env.add_template_owned(name.to_string(), source)
-                .with_context(|| format!("failed to compile template '{}'", path.display()))?;
+                .with_context(|| format!("failed to compile template '{}'", name))?;
         }
 
         Ok(Self { env })
@@ -44,6 +58,10 @@ impl Renderer {
             lang_code => lang.code(),
             is_pt => is_pt,
             page_title => page_title,
+            site_title => &cfg.site_title,
+            subtitle_en => &cfg.subtitle_en,
+            subtitle_pt => &cfg.subtitle_pt,
+            footer_text => &cfg.footer_text,
             root_prefix => root_prefix,
             lang_prefix => lang_prefix,
             language_switch_href => language_switch_href,
@@ -64,6 +82,10 @@ impl Renderer {
             lang_code => post.lang.code(),
             is_pt => is_pt,
             page_title => page_title,
+            site_title => &cfg.site_title,
+            subtitle_en => &cfg.subtitle_en,
+            subtitle_pt => &cfg.subtitle_pt,
+            footer_text => &cfg.footer_text,
             root_prefix => &post.root_prefix,
             lang_prefix => &post.lang_prefix,
             language_switch_href => &post.language_switch_href,
@@ -129,12 +151,15 @@ mod tests {
     #[test]
     fn test_render_index_and_post() {
         let cfg = Config {
-            site_title: "Lucas Telles da Silva".to_string(),
-            author: "Lucas Telles da Silva".to_string(),
-            base_url: "https://lucastslv.github.io".to_string(),
+            site_title: "Example Author".to_string(),
+            author: "Example Author".to_string(),
+            base_url: "https://example.com".to_string(),
+            subtitle_en: "Computer Science Blog".to_string(),
+            subtitle_pt: "Blog de Ciência da Computação".to_string(),
+            footer_text: "Quod erat demonstrandum.".to_string(),
             content_dir: PathBuf::from("content"),
             templates_dir: PathBuf::from("templates"),
-            output_dir: PathBuf::from("../simple-website"),
+            output_dir: PathBuf::from("dist"),
         };
 
         let renderer = Renderer::new(&cfg.templates_dir).unwrap();
@@ -175,15 +200,14 @@ mod tests {
             .render_blog_index(&cfg, Lang::En, &index.en_posts)
             .unwrap();
         assert!(en_index_html.contains("Hello Rust"));
-        assert!(
-            en_index_html.contains(r#"href="blog/hello-rust.html""#),
-            "actual html:\n{}",
-            en_index_html
-        );
+        assert!(en_index_html.contains("Example Author"));
+        assert!(en_index_html.contains("Computer Science Blog"));
+        assert!(en_index_html.contains(r#"href="blog/hello-rust.html""#));
         assert!(en_index_html.contains(r#"href="pt-br/blog.html""#));
 
         let pt_post_html = renderer.render_post(&cfg, &index.pt_posts[0]).unwrap();
         assert!(pt_post_html.contains("Olá Rust"));
+        assert!(pt_post_html.contains("Blog de Ciência da Computação"));
         assert!(pt_post_html.contains(r#"href="../../style.css""#));
         assert!(pt_post_html.contains(r#"href="../../blog/hello-rust.html""#));
         assert!(pt_post_html.contains(r#"href="../blog.html""#));

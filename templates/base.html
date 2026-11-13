@@ -17,14 +17,14 @@
         <a class="language-switch" href="{{ language_switch_href | safe }}" aria-label="View site in English" title="English">
           <img src="{{ root_prefix | safe }}img/en.png" alt="English">
         </a>
-        <h1>Lucas Telles da Silva</h1>
-        <p>Estudante de Ciência da Computação - Instituto de Informática, UFRGS</p>
+        <h1>{{ site_title }}</h1>
+        <p>{{ subtitle_pt }}</p>
         {% else %}
         <a class="language-switch" href="{{ language_switch_href | safe }}" aria-label="Switch to Portuguese" title="Português">
           <img src="{{ root_prefix | safe }}img/br.png" alt="Português">
         </a>
-        <h1>Lucas Telles da Silva</h1>
-        <p>Undergraduate Computer Science Student | Institute of Informatics, UFRGS</p>
+        <h1>{{ site_title }}</h1>
+        <p>{{ subtitle_en }}</p>
         {% endif %}
       </header>
 
@@ -42,7 +42,7 @@
     </main>
 
     <footer id="footer">
-      <p>Quod erat demonstrandum.</p>
+      <p>{{ footer_text }}</p>
     </footer>
   </div>
 </body>
